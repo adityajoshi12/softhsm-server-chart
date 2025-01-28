@@ -2,4 +2,4 @@ apiVersion: v2
 name: softhsm-server-chart
 description: A Helm chart for deploying SoftHSM server
 version: 0.1.0
-appVersion: "2.0"
+appVersion: "2.1"
