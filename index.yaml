@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  softhsm-server-chart:
+  - apiVersion: v2
+    appVersion: "2.1"
+    created: "2025-01-28T17:12:11.094515597Z"
+    description: A Helm chart for deploying SoftHSM server
+    digest: dc1ca26628db1a0e700ea1d363d8d9c6c266f4923a6fb48846fdb6824ae227df
+    name: softhsm-server-chart
+    urls:
+    - softhsm-server-chart-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-01-28T17:12:11.094520727Z"
