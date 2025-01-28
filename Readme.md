@@ -9,6 +9,11 @@ This Helm chart deploys a SoftHSM server on Kubernetes.
 
 ## Installation
 
+```bash
+helm repo add softhsm https://adityajoshi12.github.io/softhsm-server-chart
+helm repo update
+```
+
 To install the chart with the release name `my-release`:
 
 ```bash
