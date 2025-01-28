@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "softhsm-server-chart.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "softhsm-server-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "softhsm-server-chart.name" . }}
+    spec:
+      hostname: softhsm-server
+      volumes:
+        - name: config
+          secret:
+            secretName: softhsm
+            defaultMode: 420
+        - name: tokens
+          persistentVolumeClaim:
+            claimName: {{ include "softhsm-server-chart.fullname" . }}-pvc
+        - name: softhsm-config
+          configMap:
+            name: {{ include "softhsm-server-chart.fullname" . }}-config
+      initContainers:
+        - name: init
+          image: alpine
+          command:
+            - /bin/sh
+          args:
+            - '-c'
+            - mkdir -p /var/lib/softhsm/tokens
+          resources: {}
+          volumeMounts:
+            - name: tokens
+              mountPath: /var/lib/softhsm
+      containers:
+        - name: softhsm
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 2345
+          env:
+            - name: PKCS11_DAEMON_SOCKET
+              value: tls://0.0.0.0:2345
+            - name: TOKEN_LABEL
+              value: main
+            - name: TOKEN_SO_PIN_FILE
+              value: /config/token_so_pin
+            - name: TOKEN_USER_PIN_FILE
+              value: /config/token_user_pin
+            - name: TOKEN_AUTO_CREATE
+              value: '1'
+            - name: TOKEN_IMPORT_TEST_DATA
+              value: '0'
+            - name: SOFTHSM2_CONF
+              value: /etc/data/softhsm2.conf
+            - name: PKCS11_PROXY_TLS_PSK_FILE
+              value: /config/pkcs11_proxy.psk
+          resources: {}
+          volumeMounts:
+            - name: tokens
+              mountPath: /var/lib/softhsm
+            - name: config
+              mountPath: /config
+            - name: softhsm-config
+              mountPath: /etc/data

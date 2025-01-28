@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: vegardit/softhsm2-pkcs11-proxy
+  tag: latest-debian
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 2345
+
+persistence:
+  enabled: true
+  storageClass: "standard-hdd"
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+secret:
+  pkcs11_proxy_psk: "psk_identity:276043bc2901b2157e4ed0023b22b9c19654de49fe23ea017dd490ac79b77e02"
+  token_import_test_data: "0A"
+  token_so_pin: "jULCbMUxvjH"
+  token_user_pin: "jULCbMUxvjH"
+
+config:
+  softhsm2_conf: |
+    directories.tokendir = /var/lib/softhsm/tokens
+    objectstore.backend = file
+    log.level = DEBUG
